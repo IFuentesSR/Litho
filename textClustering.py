@@ -47,7 +47,8 @@ new_data=DF.set_index('HydroCode')
 
 
 ## for Takuya (sample with 1000 rows)
-sampled = new_data.sample(10000)
+sampled = new_data.sample(1000)
+sampled.columns
 # sampled.to_csv(path+'sampled_bores.csv')
 # new_data.to_csv(path+'boresTa.csv')
 
@@ -190,11 +191,11 @@ def tokenize_only(text):
 
 objectID1=sampled.OBJECTID.tolist()
 Descriptions1=sampled.Description.tolist()
-Descriptions1 = [str(n) for n in Descriptions]
+Descriptions1 = [str(n) for n in Descriptions1]
 if 'nan' in Descriptions1:
-    remove = Descriptions.index('nan')
-    del Descriptions[remove]
-    del objectID[remove]
+    remove = Descriptions1.index('nan')
+    del Descriptions1[remove]
+    del objectID1[remove]
 
 
 #use extend so it's a big flat list of vocab
@@ -209,7 +210,7 @@ for i in Descriptions1:
 
 print(np.shape(totalvocab_tokenized1),  np.shape(totalvocab_stemmed1))
 
-
+len(Descriptions1)
 
 #define vectorizer parameters
 tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
@@ -223,6 +224,7 @@ print(tfidf_matrix.shape)
 terms = tfidf_vectorizer.get_feature_names()
 
 dist = 1 - cosine_similarity(tfidf_matrix)
+dist.shape
 
 linkage_matrix = ward(dist) #define the linkage_matrix using ward clustering pre-computed distances
 linkage_matrix.shape
@@ -242,6 +244,24 @@ dendrogram(
     leaf_font_size=8.,  # font size for the x axis labels
 )
 plt.show()
+
+from sklearn.manifold import MDS
+
+MDS()
+
+# convert two components as we're plotting points in a two-dimensional plane
+# "precomputed" because we provide a distance matrix
+# we will also specify `random_state` so the plot is reproducible.
+mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
+
+pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
+
+xs, ys = pos[:, 0], pos[:, 1]
+
+len(xs)
+
+
+
 
 
 
