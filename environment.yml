@@ -1,0 +1,19 @@
+name: lith_nlp
+dependencies:
+- python=3
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- boto3
+- gensim
+- nltk
+- fuzzywuzzy
+- six
+- jupyter
+- notebook
+- ipykernel
+- autopep8
+- isort
+- tqdm
+- pip
