@@ -9,6 +9,7 @@ dependencies:
 - gensim
 - nltk
 - fuzzywuzzy
+- hdbscan
 - six
 - jupyter
 - notebook
