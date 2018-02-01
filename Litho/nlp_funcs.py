@@ -52,12 +52,11 @@ def tokenize_and_stem(text, li=None):
 
     :returns: list, stemmed and filtered text
     """
-    # '[^A-Za-z0-9]+', '', mystring
-    # text = re.sub('[^a-zA-Z0-9\n\.]+', ' ', text)  # Remove special characters
-    text = re.sub('[^A-Za-z0-9\s]+', '', text)  # Remove special characters
 
+    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', text)
+
+    # tokens = [re.sub('[^A-Za-z0-9\s\.]+', ' ', word) for word in tokens]  # Remove special characters with space
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-
     cleaned_tokens = token_cleanup(tokens)
     stems = [stemmer.stem(t) for t in cleaned_tokens]
     if li:
@@ -74,7 +73,7 @@ def tokenize_only(text, li):
     :param text: str, text to tokenize
     :param li: list[str], list of words to filter out
     """
-    text = re.sub('[^A-Za-z0-9\s]+', '', text)  # Remove special characters
+    text = re.sub('[^A-Za-z0-9\s\.]+', '', text)  # Remove special characters
 
     # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
