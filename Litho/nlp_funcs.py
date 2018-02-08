@@ -2,12 +2,14 @@ import re
 
 import nltk
 from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tag.perceptron import PerceptronTagger
 
 # Specify perceptron tagger - otherwise NLTK will instantiate the Perception package every time
 # the tagger is called.
 tagger = PerceptronTagger()
 stemmer = SnowballStemmer("english")
+lmtzr = WordNetLemmatizer()
 
 
 def token_cleanup(tokens):
@@ -82,3 +84,9 @@ def tokenize_only(text, li):
 
     return filtered_tokens
 # End tokenize_only()
+
+
+def lemmatize_stems(tokens):
+    ret = [stemmer.stem(lmtzr.lemmatize(w)) for w in tokens]
+    return ret
+# End lemmatize_stems()
