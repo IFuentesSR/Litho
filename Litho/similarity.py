@@ -1,3 +1,5 @@
+import numpy as np
+
 from fuzzywuzzy import fuzz
 
 from .nlp_funcs import get_nouns, tokenize_and_stem, tokenize_only
