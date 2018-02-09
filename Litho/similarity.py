@@ -1,8 +1,9 @@
-import numpy as np
+from collections import Counter
 
-from fuzzywuzzy import fuzz
+from fuzzywuzzy import fuzz, process
 
-from .nlp_funcs import get_nouns, tokenize_and_stem, tokenize_only
+from .nlp_funcs import (get_nouns, lemmatize_stems, tokenize_and_stem,
+                        tokenize_only)
 
 
 def check_similarity(row, target, threshold=60):
@@ -117,3 +118,61 @@ def print_sim_compare(t1, t2, stopwords):
 
     print("Score would be:", score)
 # End print_sim_compare()
+
+
+def merge_similar_words(lith_df, stopwords, target_cols=None):
+    """Merge similar words together.
+
+    :param lith_df: DataFrame
+    :param stopwords: list[str], common words to filter out
+    :param target_cols: list[str], column names with additional features to use other than 'Description'
+
+    :returns: tuple, `DataFrame` and `set` of unique words
+    """
+    assert 'Description' in lith_df.columns, "'Description' column not found in DataFrame"
+
+    if not target_cols:
+        target_cols = []
+
+    all_words = Counter()
+    target_cols = []
+    tokenized_desc = []
+    for row in lith_df.itertuples():
+        tmp = tokenize_and_stem(row.Description, [])
+
+        # Filter words that are less than 3 characters long
+        tmp = [w.strip() for w in tmp if w not in stopwords and len(w) > 2]
+
+        for col in target_cols:
+            if col == 'Description':
+                continue
+            tmp.append(getattr(row, col))
+        # End for
+        tokenized_desc.append(tmp)
+        all_words.update({w: 1 for w in tmp})
+    # End for
+
+    # We can filter words here based on occurance but leaving that for now...
+    all_words = [w for w in all_words]
+
+    word_map = {}
+    for word in all_words:
+        tmp = [w for w, score in process.extract(word, all_words) if score > 85]
+        word_map[word] = min(tmp, key=len)
+    # End for
+
+    updated_desc = []
+    word_set = set()
+    for desc in tokenized_desc:
+        tmp = [word_map[w] for w in desc]
+        updated_desc.append(tmp)
+        word_set.update(tmp)
+    # End for
+
+    tokenized_desc = updated_desc
+    lith_df['tokens'] = tokenized_desc
+
+    all_words = sorted(list(word_set))
+
+    return lith_df, all_words, word_map
+# End merge_similar_words()
