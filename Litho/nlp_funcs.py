@@ -55,7 +55,7 @@ def tokenize_and_stem(text, li=None):
     :returns: list, stemmed and filtered text
     """
 
-    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', text)
+    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', str(text))
 
     # tokens = [re.sub('[^A-Za-z0-9\s\.]+', ' ', word) for word in tokens]  # Remove special characters with space
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
