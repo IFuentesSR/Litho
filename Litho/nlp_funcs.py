@@ -45,6 +45,30 @@ def get_nouns(tokens):
 # End get_nouns()
 
 
+def tokenize_and_lemmatize(text, li=None):
+    """
+    Tokenize a sentence, then individual words to ensure tokenization of punctuation.
+
+    :param text: str, text to tokenize and stem
+    :param li: list[str], list of words to filter out
+
+    :returns: list, stemmed and filtered text
+    """
+
+    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', text)
+
+    # tokens = [re.sub('[^A-Za-z0-9\s\.]+', ' ', word) for word in tokens]  # Remove special characters with space
+    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+    cleaned_tokens = token_cleanup(tokens)
+    stems = [lmtzr.lemmatize(t) for t in cleaned_tokens]
+    if li:
+        stems = [x for x in stems if x not in li]
+
+    return stems
+# End tokenize_and_stem()
+
+
+
 def tokenize_and_stem(text, li=None):
     """
     Tokenize a sentence, then individual words to ensure tokenization of punctuation.
