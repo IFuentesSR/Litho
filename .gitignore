@@ -5,3 +5,11 @@ Litho/__pycache__/
 
 ap2_output\.csv
 
+papers/*
+
+!papers/.gitkeep
+
+tmp/*
+
+!tmp/.gitkeep
+
