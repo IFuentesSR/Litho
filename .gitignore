@@ -8,3 +8,5 @@ ap2_output\.csv
 tmp/*
 
 !tmp/.gitkeep
+
+papers/
