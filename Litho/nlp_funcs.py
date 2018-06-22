@@ -20,12 +20,7 @@ def token_cleanup(tokens):
 
     :returns: list, cleaned list of tokens
     """
-    cleaned_tokens = []
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            cleaned_tokens.append(token)
-        # End if
-    # End for
+    cleaned_tokens = [token for token in tokens if token.isalpha()]
 
     return cleaned_tokens
 # End token_cleanup()
@@ -55,11 +50,12 @@ def tokenize_and_lemmatize(text, li=None):
     :returns: list, stemmed and filtered text
     """
 
-    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', text)
+    text = re.sub('[^A-Za-z\s]+', ' ', text)
 
     # tokens = [re.sub('[^A-Za-z0-9\s\.]+', ' ', word) for word in tokens]  # Remove special characters with space
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     cleaned_tokens = token_cleanup(tokens)
+    cleaned_tokens = [n for n in cleaned_tokens if len(n) > 3]
     stems = [lmtzr.lemmatize(t) for t in cleaned_tokens]
     if li:
         stems = [x for x in stems if x not in li]
@@ -79,11 +75,12 @@ def tokenize_and_stem(text, li=None):
     :returns: list, stemmed and filtered text
     """
 
-    text = re.sub('[^A-Za-z0-9\s\.]+', ' ', str(text))
+    text = re.sub('[^A-Za-z\s]+', ' ', str(text))
 
     # tokens = [re.sub('[^A-Za-z0-9\s\.]+', ' ', word) for word in tokens]  # Remove special characters with space
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     cleaned_tokens = token_cleanup(tokens)
+    cleaned_tokens = [n for n in cleaned_tokens if len(n) > 3]
     stems = [stemmer.stem(t) for t in cleaned_tokens]
     if li:
         stems = [x for x in stems if x not in li]
@@ -99,11 +96,12 @@ def tokenize_only(text, li):
     :param text: str, text to tokenize
     :param li: list[str], list of words to filter out
     """
-    text = re.sub('[^A-Za-z0-9\s\.]+', '', text)  # Remove special characters
+    text = re.sub('[^A-Za-z\s]+', ' ', text)  # Remove special characters
 
     # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
     tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
     cleaned_tokens = token_cleanup(tokens)
+    cleaned_tokens = [n for n in cleaned_tokens if len(n) > 3]
     filtered_tokens = [x for x in cleaned_tokens if x not in li]
 
     return filtered_tokens
